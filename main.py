@@ -1,8 +1,7 @@
 import streamlit as st
 from keras.models import load_model
-from PIL import Image, ImageEnhance, ImageFilter
+from PIL import Image, ImageEnhance
 import numpy as np
-from io import BytesIO
 import cv2
 import plotly.graph_objects as go
 from datetime import datetime
