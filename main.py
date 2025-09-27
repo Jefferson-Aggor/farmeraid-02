@@ -1,22 +1,14 @@
 import streamlit as st
-import tensorflow as tf
 from keras.models import load_model
 from PIL import Image, ImageEnhance, ImageFilter
 import numpy as np
 from io import BytesIO
 import cv2
-import matplotlib.pyplot as plt
-import seaborn as sns
-import plotly.express as px
 import plotly.graph_objects as go
 from datetime import datetime
-import base64
 
 from disease_info import DISEASE_DATABASE
 
-print(tf.__version__)
-
-# Page configuration
 st.set_page_config(
     page_title="FarmerAid - Plant Disease Detection",
     page_icon="🍅",
@@ -24,7 +16,6 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Define class names - THIS SHOULD MATCH YOUR MODEL'S TRAINING DATA EXACTLY
 CLASS_NAMES = [
     "Pepper Bell Bacterial Spot",
     "Pepper Bell Healthy",
@@ -129,9 +120,9 @@ def preprocess_image(img):
         if len(original_shape) < 3 or original_shape[2] != 3:
             return None, original_shape, "Image must be RGB (3 channels)"
 
-        # Normalize and resize - MAKE SURE THIS MATCHES YOUR TRAINING PREPROCESSING
+        # Normalize and resize
         img_normalized = img_array / 255.0
-        img_resized = cv2.resize(img_normalized, (128, 128))  # Adjust size if needed
+        img_resized = cv2.resize(img_normalized, (128, 128))
         img_batch = np.expand_dims(img_resized, axis=0)
 
         return img_batch, original_shape, None
@@ -141,7 +132,6 @@ def preprocess_image(img):
 
 def create_prediction_chart(predictions, class_names):
     """Create an interactive prediction confidence chart"""
-    # Get top 5 predictions for better visualization
     top_indices = np.argsort(predictions)[-5:][::-1]
     top_predictions = predictions[top_indices]
     top_classes = [class_names[i] for i in top_indices]
@@ -377,7 +367,6 @@ def main():
             st.warning(f"No detailed information available for: {predicted_disease}")
             st.info("Please ensure your disease_info.py contains information for all predicted classes.")
 
-        # Action plan
         st.markdown("### 📋 Recommended Action Plan")
 
         if confidence >= 0.7:
